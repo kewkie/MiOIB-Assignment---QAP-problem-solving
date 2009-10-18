@@ -3,51 +3,46 @@ using System.IO;
 
 namespace Metaheuristics
 {
-    class InstanceReader
+    static class InstanceIO
     {
-        private TextReader _instance;
-        private ReaderMode _readerMode = ReaderMode.Count;
-        private int[][] _instanceDistances;
-        private int[][] _instanceCosts;
-
-        public void ReadInstance(string fileName)
+        public static QapInstance ReadInstance(string fileName)
         {
+            TextReader instanceData;
+            ReaderMode readerMode = ReaderMode.Count;
+            QapInstance instance = null;
             if (File.Exists(fileName))
             {
-                _instance = new StreamReader(fileName);
+                instanceData = new StreamReader(fileName);
                 var strLine = String.Empty;
                 int instanceSize = 0;
                 int rowsRead = 0;
-
+                
                 while (strLine != null)
                 {
-                    strLine = _instance.ReadLine();
+                    strLine = instanceData.ReadLine();
                     strLine = strLine.Trim();
                     if (strLine == String.Empty)
                     {
                         continue;
                     }
-                    switch (_readerMode)
+                    switch (readerMode)
                     {
                         case ReaderMode.Count:
                             instanceSize = Int32.Parse(strLine);
-                            _instanceDistances = new int[instanceSize][];
-                            _instanceCosts = new int[instanceSize][];
-                            _readerMode = ReaderMode.Distances;
+                            instance = new QapInstance(instanceSize);
+                            readerMode = ReaderMode.Distances;
 
                             break;
                         case ReaderMode.Distances:
-                            _instanceDistances[rowsRead] = FillArrayRow(strLine);
-                            rowsRead++;
+                            instance.DistanceMatrix[rowsRead++] = FillArrayRow(strLine);
                             if (rowsRead == instanceSize)
                             {
-                                _readerMode = ReaderMode.Costs;
+                                readerMode = ReaderMode.Costs;
                                 rowsRead = 0;
                             }
                             break;
                         case ReaderMode.Costs:
-                            _instanceCosts[rowsRead] = FillArrayRow(strLine);
-                            rowsRead++;
+                            instance.CostMatrix[rowsRead++] = FillArrayRow(strLine);
                             if (rowsRead == instanceSize)
                             {
                                 strLine = null;
@@ -60,6 +55,7 @@ namespace Metaheuristics
             {
                 throw new FileNotFoundException("File not found, fool");
             }
+            return instance;
         }
 
         private static int[] FillArrayRow(string row)
@@ -74,9 +70,7 @@ namespace Metaheuristics
             return parsedNumbers;
         }
 
-
-
-        private static void PrintArray(int[][] array)
+        public static void PrintArray(int[][] array)
         {
             for (int i = 0; i < array.Length; i++)
             {
@@ -88,11 +82,10 @@ namespace Metaheuristics
             }
         }
 
-        public void PrintInstances()
+        public static void PrintInstance(QapInstance instance)
         {
-            PrintArray(_instanceDistances);
-            PrintArray(_instanceCosts);
+            PrintArray(instance.DistanceMatrix);
+            PrintArray(instance.CostMatrix);
         }
-
     }
 }

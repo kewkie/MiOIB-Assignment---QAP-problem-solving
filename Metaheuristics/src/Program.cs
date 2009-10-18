@@ -7,11 +7,11 @@ namespace Metaheuristics
     {
         static void Main(string[] args)
         {
-            var reader = new InstanceReader();
+            QapInstance instance;
             try
             {
-                reader.ReadInstance("res/chr18a.dat");
-                reader.PrintInstances();
+                instance = InstanceIO.ReadInstance("res/chr18a.dat");
+                InstanceIO.PrintInstance(instance);
             }
             catch(FileNotFoundException fnfe)
             {
