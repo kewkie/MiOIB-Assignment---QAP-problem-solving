@@ -34,7 +34,7 @@ namespace Metaheuristics
 
                             break;
                         case ReaderMode.Distances:
-                            instance.DistanceMatrix[rowsRead++] = FillArrayRow(strLine);
+                            FillArrayRow(instance.DistanceMatrix, rowsRead++, strLine);
                             if (rowsRead == instanceSize)
                             {
                                 readerMode = ReaderMode.Costs;
@@ -42,7 +42,7 @@ namespace Metaheuristics
                             }
                             break;
                         case ReaderMode.Costs:
-                            instance.CostMatrix[rowsRead++] = FillArrayRow(strLine);
+                            FillArrayRow(instance.CostMatrix, rowsRead++, strLine);
                             if (rowsRead == instanceSize)
                             {
                                 strLine = null;
@@ -58,34 +58,61 @@ namespace Metaheuristics
             return instance;
         }
 
-        private static int[] FillArrayRow(string row)
+        private static void FillArrayRow(int[] array, int rowNum, string row)
         {
             var separators = new[]{' '};
             var splittedNumbers = row.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            var parsedNumbers = new int[splittedNumbers.Length];
             for (int i = 0; i < splittedNumbers.Length; i++)
             {
-                parsedNumbers[i] = Int32.Parse(splittedNumbers[i]);
+                array[splittedNumbers.Length * rowNum + i] = Int32.Parse(splittedNumbers[i]);
             }
-            return parsedNumbers;
         }
 
-        public static void PrintArray(int[][] array)
+        public static void PrintSquareArray(int[] array, int size)
         {
-            for (int i = 0; i < array.Length; i++)
+            int max = 0;
+            foreach (int i in array)
+                if (i > max)
+                    max = i;
+            int elementRank = 0;
+            for (int i = 0; i < 10; i++)
             {
-                for (int j = 0; j < array[i].Length; j++)
+                if (max > Math.Pow(10, i))
+                    elementRank++;
+                else
+                    break;
+            }
+            int sizeRank = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                if (size > Math.Pow(10, i))
+                    sizeRank++;
+                else
+                    break;
+            }
+            int padding = Math.Max(elementRank + 1, sizeRank + 1);
+            Console.Write("|".PadLeft(sizeRank+1));
+            for (int i = 0; i < size; i++)
+                Console.Write(i.ToString().PadLeft(padding));
+            Console.WriteLine();
+            Console.Write("+".PadLeft(sizeRank+1,'-') + "".PadRight(size*padding,'-'));
+            Console.WriteLine();
+            for (int i = 0; i < size; i++)
+            {
+                Console.Write(i.ToString().PadLeft(sizeRank) + "|");
+                for (int j = 0; j < size; j++)
                 {
-                    Console.Write("{0} ", array[i][j]);
+                    Console.Write(array[size*i+j].ToString().PadLeft(padding));
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
         }
 
         public static void PrintInstance(QapInstance instance)
         {
-            PrintArray(instance.DistanceMatrix);
-            PrintArray(instance.CostMatrix);
+            PrintSquareArray(instance.DistanceMatrix, instance.Size);
+            PrintSquareArray(instance.CostMatrix, instance.Size);
         }
     }
 }
