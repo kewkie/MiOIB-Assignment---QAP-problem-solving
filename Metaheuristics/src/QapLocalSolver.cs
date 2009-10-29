@@ -18,7 +18,7 @@ namespace Metaheuristics
 
 
         public QapLocalSolver(QapInstance instance, int seed,
-            InitialSolution initialSolution, Neighbourhood neighbourhood)
+            InitialSolution initialSolution, NeighbourhoodType neighbourhoodType)
         {
             _instance = instance;
             switch (initialSolution)
@@ -26,10 +26,10 @@ namespace Metaheuristics
                 case InitialSolution.Random: _initialSolutionGenerator = GenerateRandomSolution; break;
                 default: _initialSolutionGenerator = GenerateRandomSolution; break;
             }
-            switch (neighbourhood)
+            switch (neighbourhoodType)
             {
-                case Neighbourhood.Two_Swap: break;
-                case Neighbourhood.Three_Swap: break;
+                case NeighbourhoodType.Two_Swap: break;
+                case NeighbourhoodType.Three_Swap: break;
                 default: break;
             }
             _seed = seed;
@@ -38,15 +38,30 @@ namespace Metaheuristics
         public int[] Solve()
         {
             int[] initialSolution = _initialSolutionGenerator();
+            var perm = new Neighbourhood(initialSolution, NeighbourhoodType.Two_Swap);
+            foreach (var neighborhood in perm)
+            {
+                foreach (var i in neighborhood)
+                {
+                    Console.Write(i + " ");
+                }
+                Console.WriteLine();
+            }
+
             return initialSolution;
-        }
+        } 
+
+
 
         public int Evaluate(int[] solution)
         {
             int totalCost = 0;
             for (int i = 0; i < solution.Length; i++)
             {
-                totalCost += _instance.CostMatrix[i * solution.Length + solution[i]] * _instance.DistanceMatrix[i * solution.Length + solution[i]];                  
+                for (int j = 0; j < solution.Length; j++)
+                {
+                    totalCost += _instance.DistanceMatrix[i*solution.Length + j] * _instance.CostMatrix[solution[i]*solution.Length + j];    
+                }                   
             }
             Console.WriteLine("Evaluation = {0}", totalCost);
             return totalCost;

@@ -47,14 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\enum\Neighbourhood.cs" />
+    <Compile Include="src\enum\NeighbourhoodType.cs" />
     <Compile Include="src\enum\InitialSolution.cs" />
     <Compile Include="src\InstanceIO.cs" />
+    <Compile Include="src\Neighbourhood.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\QapInstance.cs" />
     <Compile Include="src\QapLocalSolver.cs" />
     <Compile Include="src\enum\ReaderMode.cs" />
+    <Compile Include="src\TwoSwapEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\bur26a.sln">
