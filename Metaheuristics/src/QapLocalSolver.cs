@@ -4,46 +4,76 @@ namespace Metaheuristics
 {
     delegate int[] GenerateInitialSolution();
     delegate int[] GenerateNeighbour(int number);
+    internal delegate int[] SolveInstance(Neighbourhood neighbourhood);
 
     class QapLocalSolver
     {
         private readonly QapInstance _instance;
-        private readonly int _seed;
+        private InitialSolution _initialSolution;
+        private GenerateInitialSolution _initialSolutionGenerator;
+        private LocalSearchType _searchType;
+        private SolveInstance _solveInstance;
 
-        private readonly GenerateInitialSolution _initialSolutionGenerator;
+        public InitialSolution InitialSolution
+        {
+            get
+            {
+                return _initialSolution;
+            }
+            set
+            {
+                _initialSolution = value;
+                switch (value)
+                {
+                    case InitialSolution.Random: 
+                        _initialSolutionGenerator = GenerateRandomSolution; 
+                        break;
+                    default: 
+                        _initialSolutionGenerator = GenerateRandomSolution; 
+                        break;
+                }
 
-        public QapLocalSolver(QapInstance instance, int seed,
-            InitialSolution initialSolution, NeighbourhoodType neighbourhoodType)
+            }
+        }
+
+        public LocalSearchType SearchType
+        {
+            get
+            {
+                return _searchType;
+            }
+            set
+            {
+                _searchType = value;
+                switch (value)
+                {
+                    case LocalSearchType.Greedy:
+                        _solveInstance = SolveGreedy;
+                        break;
+                    case LocalSearchType.Steepest:
+                        _solveInstance = SolveSteepest;
+                        break;
+                    default:
+                        _solveInstance = SolveGreedy;
+                        break;
+                }
+            }
+        }
+
+        public NeighbourhoodType NeighbourhoodType { get; set; }
+        public int Seed { get; set; }
+
+
+        public QapLocalSolver(QapInstance instance)
         {
             _instance = instance;
-            switch (initialSolution)
-            {
-                case InitialSolution.Random: _initialSolutionGenerator = GenerateRandomSolution; break;
-                default: _initialSolutionGenerator = GenerateRandomSolution; break;
-            }
-            switch (neighbourhoodType)
-            {
-                case NeighbourhoodType.TwoSwap: break;
-                case NeighbourhoodType.ThreeSwap: break;
-                default: break;
-            }
-            _seed = seed;
         }
 
         public int[] Solve()
         {
             int[] initialSolution = _initialSolutionGenerator();
-            var perm = new Neighbourhood(initialSolution, NeighbourhoodType.TwoSwap);
-            foreach (var neighborhood in perm)
-            {
-                foreach (var i in neighborhood)
-                {
-                    Console.Write(i + " ");
-                }
-                Console.WriteLine();
-            }
-
-            return initialSolution;
+            var perm = new Neighbourhood(initialSolution, NeighbourhoodType);
+            return _solveInstance(perm);
         } 
 
 
@@ -69,7 +99,7 @@ namespace Metaheuristics
             for (int i = 0; i < _instance.Size ; i++)
 			    solution[i] = i;
             
-            Random r = new Random(_seed);
+            Random r = new Random(Seed);
             
             for (int i = _instance.Size; i >= 2; i--)
             {
@@ -115,5 +145,31 @@ namespace Metaheuristics
             return solution;
         }
 
+        private int[] SolveGreedy(Neighbourhood hood)
+        {
+            var bestScore = int.MaxValue;
+            var solveFinished = false;
+            while(!solveFinished)
+            {
+                solveFinished = true;
+                foreach (var neighbourhood in hood)
+                {
+                    var currentScore = Evaluate(neighbourhood);
+                    if (currentScore < bestScore)
+                    {
+                        bestScore = currentScore;
+                        solveFinished = false;
+                        hood.Base = neighbourhood;
+                        break;
+                    }
+                }
+            }
+            return hood.Base;
+        }
+
+        private int[] SolveSteepest(Neighbourhood hood)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
