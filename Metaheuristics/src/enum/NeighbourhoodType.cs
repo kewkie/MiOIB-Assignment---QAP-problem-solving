@@ -3,7 +3,7 @@ namespace Metaheuristics
 {
     enum NeighbourhoodType
     {
-        Two_Swap,
-        Three_Swap
+        TwoSwap,
+        ThreeSwap
     }
 }

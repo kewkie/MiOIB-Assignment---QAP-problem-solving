@@ -34,7 +34,10 @@ namespace Metaheuristics
 
                             break;
                         case ReaderMode.Distances:
-                            FillArrayRow(instance.DistanceMatrix, rowsRead++, strLine);
+                            if (instance != null) 
+                                FillArrayRow(instance.DistanceMatrix, rowsRead++, strLine);
+                            else
+                                throw new InvalidOperationException("Instance should not be null");
                             if (rowsRead == instanceSize)
                             {
                                 readerMode = ReaderMode.Costs;
@@ -42,7 +45,10 @@ namespace Metaheuristics
                             }
                             break;
                         case ReaderMode.Costs:
-                            FillArrayRow(instance.CostMatrix, rowsRead++, strLine);
+                            if (instance != null) 
+                                FillArrayRow(instance.CostMatrix, rowsRead++, strLine);
+                            else
+                                throw new InvalidOperationException("Instance should not be null");
                             if (rowsRead == instanceSize)
                             {
                                 strLine = null;

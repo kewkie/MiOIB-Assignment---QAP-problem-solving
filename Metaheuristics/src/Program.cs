@@ -5,16 +5,15 @@ namespace Metaheuristics
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            QapInstance instance;
             try
             {
                 //instance = InstanceIO.ReadInstance("res/chr18a.dat");
                 //instance = InstanceIO.ReadInstance("res/els19.dat");
-                instance = InstanceIO.ReadInstance("res/esc16a.dat");
+                QapInstance instance = InstanceIO.ReadInstance("res/esc16a.dat");
                 InstanceIO.PrintInstance(instance);
-                QapLocalSolver qls = new QapLocalSolver(instance, 0, InitialSolution.Random, NeighbourhoodType.Two_Swap);
+                var qls = new QapLocalSolver(instance, 0, InitialSolution.Random, NeighbourhoodType.TwoSwap);
                 qls.Evaluate(qls.Solve());
             }
             catch(FileNotFoundException fnfe)

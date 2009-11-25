@@ -2,9 +2,9 @@
 {
     public class QapInstance
     {
-        private int _instanceSize;
-        private int[] _distances;
-        private int[] _costs;
+        private readonly int _instanceSize;
+        private readonly int[] _distances;
+        private readonly int[] _costs;
 
         public QapInstance(int size)
         {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Metaheuristics
 {
@@ -10,12 +7,10 @@ namespace Metaheuristics
 
     class QapLocalSolver
     {
-        QapInstance _instance;
-        int _seed;
+        private readonly QapInstance _instance;
+        private readonly int _seed;
 
-        GenerateInitialSolution _initialSolutionGenerator;
-        GenerateNeighbour _neighbourGenerator;
-
+        private readonly GenerateInitialSolution _initialSolutionGenerator;
 
         public QapLocalSolver(QapInstance instance, int seed,
             InitialSolution initialSolution, NeighbourhoodType neighbourhoodType)
@@ -28,8 +23,8 @@ namespace Metaheuristics
             }
             switch (neighbourhoodType)
             {
-                case NeighbourhoodType.Two_Swap: break;
-                case NeighbourhoodType.Three_Swap: break;
+                case NeighbourhoodType.TwoSwap: break;
+                case NeighbourhoodType.ThreeSwap: break;
                 default: break;
             }
             _seed = seed;
@@ -38,7 +33,7 @@ namespace Metaheuristics
         public int[] Solve()
         {
             int[] initialSolution = _initialSolutionGenerator();
-            var perm = new Neighbourhood(initialSolution, NeighbourhoodType.Two_Swap);
+            var perm = new Neighbourhood(initialSolution, NeighbourhoodType.TwoSwap);
             foreach (var neighborhood in perm)
             {
                 foreach (var i in neighborhood)
@@ -112,8 +107,8 @@ namespace Metaheuristics
                         maxPosition = size * i + j;
                 solution[maxPosition/size] = maxPosition % size;
                 for (int j = 0; j < sizexsize; j++)
-                    ;
-
+                {
+                }
             }
              
 
