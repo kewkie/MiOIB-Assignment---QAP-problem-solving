@@ -76,8 +76,6 @@ namespace Metaheuristics
             return _solveInstance(perm);
         } 
 
-
-
         public int Evaluate(int[] solution)
         {
             int totalCost = 0;
@@ -88,7 +86,7 @@ namespace Metaheuristics
                     totalCost += _instance.DistanceMatrix[i*solution.Length + j] * _instance.CostMatrix[solution[i]*solution.Length + j];    
                 }                   
             }
-            Console.WriteLine("Evaluation = {0}", totalCost);
+            //Console.WriteLine("Evaluation = {0}", totalCost);
             return totalCost;
         }
 
@@ -169,7 +167,27 @@ namespace Metaheuristics
 
         private int[] SolveSteepest(Neighbourhood hood)
         {
-            throw new NotImplementedException();
+            var bestScore = int.MaxValue;
+            var solveFinished = false;
+            var bestHood = new int[hood.Base.Length];
+            var iterations = 0;
+            while (!solveFinished)
+            {
+                solveFinished = true;
+                foreach (var neighbourhood in hood)
+                {
+                    var currentScore = Evaluate(neighbourhood);
+                    if (currentScore < bestScore)
+                    {
+                        bestScore = currentScore;
+                        solveFinished = false;
+                        Array.Copy(neighbourhood,bestHood, bestHood.Length);
+                    }
+                }
+                Array.Copy(bestHood, hood.Base, bestHood.Length);
+                Console.WriteLine("Hood no #{0}: {1}", iterations++, bestScore);
+            }
+            return bestHood;
         }
     }
 }
