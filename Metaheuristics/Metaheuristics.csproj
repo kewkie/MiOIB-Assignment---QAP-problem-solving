@@ -50,7 +50,9 @@
     <Compile Include="src\enum\LocalSearchType.cs" />
     <Compile Include="src\enum\NeighbourhoodType.cs" />
     <Compile Include="src\enum\InitialSolution.cs" />
+    <Compile Include="src\Experiment.cs" />
     <Compile Include="src\InstanceIO.cs" />
+    <Compile Include="src\QapSolver.cs" />
     <Compile Include="src\Neighbourhood.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

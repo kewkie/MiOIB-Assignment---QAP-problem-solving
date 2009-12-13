@@ -9,18 +9,19 @@ namespace Metaheuristics
         {
             try
             {
-                //instance = InstanceIO.ReadInstance("res/chr18a.dat");
-                //instance = InstanceIO.ReadInstance("res/els19.dat");
-                QapInstance instance = InstanceIO.ReadInstance("res/esc16a.dat");
+                //var instance = InstanceIO.ReadInstance("res/chr18a.dat");
+                //var instance = InstanceIO.ReadInstance("res/els19.dat");
+                var instance = InstanceIO.ReadInstance("res/nug18.dat");
                 InstanceIO.PrintInstance(instance);
                 var qls = new QapLocalSolver(instance)
                               {
                                   InitialSolution = InitialSolution.Random,
                                   NeighbourhoodType = NeighbourhoodType.TwoSwap,
-                                  SearchType = LocalSearchType.Greedy,
-                                  Seed = 0
+                                  SearchType = LocalSearchType.Steepest,
+                                  Seed = DateTime.Now.Millisecond
                               };
-                Console.WriteLine("Final evaluation: {0}",qls.Evaluate(qls.Solve()));
+                var exp = new Experiment(qls);
+                var results = exp.SolveWithTimeLimit(new TimeSpan(0, 1, 0), new TimeSpan(0,0,1));
             }
             catch(FileNotFoundException fnfe)
             {

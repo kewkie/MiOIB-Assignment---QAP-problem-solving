@@ -6,9 +6,8 @@ namespace Metaheuristics
     delegate int[] GenerateNeighbour(int number);
     internal delegate int[] SolveInstance(Neighbourhood neighbourhood);
 
-    class QapLocalSolver
+    class QapLocalSolver : QapSolver
     {
-        private readonly QapInstance _instance;
         private InitialSolution _initialSolution;
         private GenerateInitialSolution _initialSolutionGenerator;
         private LocalSearchType _searchType;
@@ -63,43 +62,27 @@ namespace Metaheuristics
         public NeighbourhoodType NeighbourhoodType { get; set; }
         public int Seed { get; set; }
 
-
-        public QapLocalSolver(QapInstance instance)
+        public QapLocalSolver(QapInstance instance) : base(instance)
         {
-            _instance = instance;
         }
 
-        public int[] Solve()
+        public override int[] Solve()
         {
             int[] initialSolution = _initialSolutionGenerator();
             var perm = new Neighbourhood(initialSolution, NeighbourhoodType);
             return _solveInstance(perm);
         } 
 
-        public int Evaluate(int[] solution)
+        private int[] GenerateRandomSolution()
         {
-            int totalCost = 0;
-            for (int i = 0; i < solution.Length; i++)
-            {
-                for (int j = 0; j < solution.Length; j++)
-                {
-                    totalCost += _instance.DistanceMatrix[i*solution.Length + j] * _instance.CostMatrix[solution[i]*solution.Length + j];    
-                }                   
-            }
-            //Console.WriteLine("Evaluation = {0}", totalCost);
-            return totalCost;
-        }
+            int[] solution = new int[Instance.Size];
 
-        public int[] GenerateRandomSolution()
-        {
-            int[] solution = new int[_instance.Size];
-
-            for (int i = 0; i < _instance.Size ; i++)
+            for (int i = 0; i < Instance.Size ; i++)
 			    solution[i] = i;
             
-            Random r = new Random(Seed);
+            Random r = new Random(DateTime.Now.Millisecond);
             
-            for (int i = _instance.Size; i >= 2; i--)
+            for (int i = Instance.Size; i >= 2; i--)
             {
                 int temp = solution[i - 1];
                 int spot = r.Next() % i;
@@ -107,22 +90,23 @@ namespace Metaheuristics
                 solution[spot] = temp;
             }
 
-            for (int i = 0; i < solution.Length; i++)
-                Console.WriteLine("{0}: {1}", i, solution[i]);
+            //for (int i = 0; i < solution.Length; i++)
+            //   Console.Write("{0} ", solution[i]);
+            //Console.WriteLine();
 
             return solution;
         }
 
-        public int[] GenerateGreedyHeuristicSolution()
+        private int[] GenerateGreedyHeuristicSolution()
         {
-            int size = _instance.Size;
-            int sizexsize = _instance.DistanceMatrix.Length;
+            int size = Instance.Size;
+            int sizexsize = Instance.DistanceMatrix.Length;
             int[] distanceClone = new int[sizexsize];
             int[] costClone = new int[sizexsize];
             for (int i = 0; i < sizexsize; i++)
             {
-                distanceClone[i] = _instance.DistanceMatrix[i];
-                costClone[i] = _instance.CostMatrix[i];
+                distanceClone[i] = Instance.DistanceMatrix[i];
+                costClone[i] = Instance.CostMatrix[i];
             }
 
             int[] solution = new int[size];
@@ -185,7 +169,7 @@ namespace Metaheuristics
                     }
                 }
                 Array.Copy(bestHood, hood.Base, bestHood.Length);
-                Console.WriteLine("Hood no #{0}: {1}", iterations++, bestScore);
+                //Console.WriteLine("Hood no #{0}: {1}", iterations++, bestScore);
             }
             return bestHood;
         }
