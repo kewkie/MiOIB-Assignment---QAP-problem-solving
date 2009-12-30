@@ -15,7 +15,8 @@ namespace Metaheuristics
                 instanceData = new StreamReader(fileName);
                 var strLine = String.Empty;
                 int instanceSize = 0;
-                int rowsRead = 0;
+                int numbersRead = 0;
+                var separators = new[] { ' ' };
                 
                 while (strLine != null)
                 {
@@ -34,22 +35,35 @@ namespace Metaheuristics
 
                             break;
                         case ReaderMode.Distances:
-                            if (instance != null) 
-                                FillArrayRow(instance.DistanceMatrix, rowsRead++, strLine);
+                            if (instance != null)
+                            {
+                                var splittedNumbers = strLine.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                                for(int i = 0; i < splittedNumbers.Length; i++)
+                                {
+                                    instance.DistanceMatrix[numbersRead++] = Int32.Parse(splittedNumbers[i]);
+                                }
+                            }
+                                
                             else
                                 throw new InvalidOperationException("Instance should not be null");
-                            if (rowsRead == instanceSize)
+                            if (numbersRead == instanceSize*instanceSize)
                             {
                                 readerMode = ReaderMode.Costs;
-                                rowsRead = 0;
+                                numbersRead = 0;
                             }
                             break;
                         case ReaderMode.Costs:
-                            if (instance != null) 
-                                FillArrayRow(instance.CostMatrix, rowsRead++, strLine);
+                            if (instance != null)
+                            {
+                                var splittedNumbers = strLine.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                                for (int i = 0; i < splittedNumbers.Length; i++)
+                                {
+                                    instance.CostMatrix[numbersRead++] = Int32.Parse(splittedNumbers[i]);
+                                }
+                            }
                             else
                                 throw new InvalidOperationException("Instance should not be null");
-                            if (rowsRead == instanceSize)
+                            if (numbersRead == instanceSize*instanceSize)
                             {
                                 strLine = null;
                             }
@@ -62,16 +76,6 @@ namespace Metaheuristics
                 throw new FileNotFoundException("File not found, fool");
             }
             return instance;
-        }
-
-        private static void FillArrayRow(int[] array, int rowNum, string row)
-        {
-            var separators = new[]{' '};
-            var splittedNumbers = row.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < splittedNumbers.Length; i++)
-            {
-                array[splittedNumbers.Length * rowNum + i] = Int32.Parse(splittedNumbers[i]);
-            }
         }
 
         public static void PrintSquareArray(int[] array, int size)

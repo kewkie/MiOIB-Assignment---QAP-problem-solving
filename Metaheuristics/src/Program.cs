@@ -11,7 +11,7 @@ namespace Metaheuristics
             {
                 //var instance = InstanceIO.ReadInstance("res/chr18a.dat");
                 //var instance = InstanceIO.ReadInstance("res/els19.dat");
-                var instance = InstanceIO.ReadInstance("res/nug18.dat");
+                var instance = InstanceIO.ReadInstance("res/rou12.dat");
                 InstanceIO.PrintInstance(instance);
                 var qls = new QapLocalSolver(instance)
                               {

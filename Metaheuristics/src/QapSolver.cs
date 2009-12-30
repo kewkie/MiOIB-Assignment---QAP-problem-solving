@@ -1,4 +1,6 @@
-﻿namespace Metaheuristics
+﻿using System;
+
+namespace Metaheuristics
 {
     internal abstract class QapSolver
     {
@@ -26,7 +28,7 @@
             {
                 for (int j = 0; j < solution.Length; j++)
                 {
-                    totalCost += Instance.DistanceMatrix[i*solution.Length + j] * Instance.CostMatrix[solution[i]*solution.Length + j];    
+                    totalCost += Instance.DistanceMatrix[i*solution.Length + j] * Instance.CostMatrix[solution[i]*solution.Length + solution[j]];    
                 }                   
             }
             //Console.WriteLine("Evaluation = {0}", totalCost);

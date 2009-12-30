@@ -18,7 +18,10 @@ namespace Metaheuristics
             var counter = 0;
             var compTimes = new List<int>();
             var bestResult = new int[_solver.InstanceSize];
-            Array.Clear(bestResult, 0, bestResult.Length);
+            for (int i = 0; i < bestResult.Length; i++ )
+            {
+                bestResult[i] = i;
+            }
             var globalTimer = new Timer(limit.TotalMilliseconds);
             var grainTimer = new Timer(grain.TotalMilliseconds) {AutoReset = true};
             var timerElapsed = false;
@@ -39,7 +42,10 @@ namespace Metaheuristics
                counter++;
                if(_solver.Evaluate(result) < _solver.Evaluate(bestResult))
                {
-                   Array.Copy(result, bestResult, result.Length);
+                   lock (bestResult)
+                   {
+                       Array.Copy(result, bestResult, result.Length);
+                   } 
                }
             }
             return compTimes;
