@@ -29,7 +29,7 @@ namespace Metaheuristics
                                       {
                                           compTimes.Add(_solver.Evaluate(bestResult));
                                           Console.WriteLine("Best Score: {0}, Count: {1}, at: {2}, counter: {3}", 
-                                              _solver.Evaluate(bestResult), compTimes.Count, e.SignalTime.Millisecond, counter );
+                                              ((counter==0)?(-1):(_solver.Evaluate(bestResult))), compTimes.Count, e.SignalTime.Millisecond, counter );
                                       };
             globalTimer.Elapsed += delegate { timerElapsed = true; grainTimer.Stop();};
             int[] result;

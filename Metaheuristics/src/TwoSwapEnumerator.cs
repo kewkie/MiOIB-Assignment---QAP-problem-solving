@@ -6,7 +6,7 @@ namespace Metaheuristics
 {
     class TwoSwapEnumerator : IEnumerator<int[]>
     {
-        private int[] _current;
+        private readonly int[] _current;
         private readonly int[] _base;
         private int _firstIndex;
         private int _secondIndex;
@@ -14,6 +14,7 @@ namespace Metaheuristics
         public TwoSwapEnumerator(int[] @base)
         {
             _base = @base;
+            _current = new int[_base.Length];
             Reset();
         }
 
@@ -24,8 +25,8 @@ namespace Metaheuristics
 
         public bool MoveNext()
         {
-            Swap(_firstIndex, _secondIndex);
-            
+            //Swap(_firstIndex, _secondIndex);
+            Array.Copy(_base, _current, _base.Length);
             _secondIndex++;
             if(_secondIndex == _base.Length)
             {
@@ -50,8 +51,8 @@ namespace Metaheuristics
         public void Reset()
         {
             _firstIndex = 0;
-            _secondIndex = 0;
-            _current = _base;
+            _secondIndex = 1;
+            Array.Copy(_base, _current, _base.Length);
         }
 
         public int[] Current

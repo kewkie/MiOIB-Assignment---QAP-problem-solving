@@ -2,6 +2,8 @@
 {
     enum InitialSolution
     {
-        Random
+        Random,
+        Heuristic,
+        AntiHeuristic
     }
 }

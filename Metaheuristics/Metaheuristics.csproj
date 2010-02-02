@@ -52,6 +52,7 @@
     <Compile Include="src\enum\InitialSolution.cs" />
     <Compile Include="src\Experiment.cs" />
     <Compile Include="src\InstanceIO.cs" />
+    <Compile Include="src\QapSASolver.cs" />
     <Compile Include="src\QapSolver.cs" />
     <Compile Include="src\Neighbourhood.cs" />
     <Compile Include="src\Program.cs" />
@@ -59,6 +60,8 @@
     <Compile Include="src\QapInstance.cs" />
     <Compile Include="src\QapLocalSolver.cs" />
     <Compile Include="src\enum\ReaderMode.cs" />
+    <Compile Include="src\QapTabuSolver.cs" />
+    <Compile Include="src\ThreeSwapEnumerator.cs" />
     <Compile Include="src\TwoSwapEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -549,6 +552,9 @@
     </None>
     <None Include="res\kra30b.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="res\kupa.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="res\lipa20a.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

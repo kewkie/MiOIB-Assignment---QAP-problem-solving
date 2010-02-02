@@ -26,7 +26,7 @@ namespace Metaheuristics
                 case NeighbourhoodType.TwoSwap:
                     return new TwoSwapEnumerator(Base);
                 case NeighbourhoodType.ThreeSwap:
-                    return null;
+                    return new ThreeSwapEnumerator(Base);
                 default:
                     return new TwoSwapEnumerator(Base);
             }

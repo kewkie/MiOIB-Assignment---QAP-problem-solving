@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Metaheuristics
 {
@@ -8,32 +9,10 @@ namespace Metaheuristics
 
     class QapLocalSolver : QapSolver
     {
-        private InitialSolution _initialSolution;
-        private GenerateInitialSolution _initialSolutionGenerator;
         private LocalSearchType _searchType;
         private SolveInstance _solveInstance;
 
-        public InitialSolution InitialSolution
-        {
-            get
-            {
-                return _initialSolution;
-            }
-            set
-            {
-                _initialSolution = value;
-                switch (value)
-                {
-                    case InitialSolution.Random: 
-                        _initialSolutionGenerator = GenerateRandomSolution; 
-                        break;
-                    default: 
-                        _initialSolutionGenerator = GenerateRandomSolution; 
-                        break;
-                }
-
-            }
-        }
+        
 
         public LocalSearchType SearchType
         {
@@ -72,60 +51,6 @@ namespace Metaheuristics
             var perm = new Neighbourhood(initialSolution, NeighbourhoodType);
             return _solveInstance(perm);
         } 
-
-        private int[] GenerateRandomSolution()
-        {
-            int[] solution = new int[Instance.Size];
-
-            for (int i = 0; i < Instance.Size ; i++)
-			    solution[i] = i;
-            
-            Random r = new Random(DateTime.Now.Millisecond);
-            
-            for (int i = Instance.Size; i >= 2; i--)
-            {
-                int temp = solution[i - 1];
-                int spot = r.Next() % i;
-                solution[i - 1] = solution[spot];
-                solution[spot] = temp;
-            }
-
-            //for (int i = 0; i < solution.Length; i++)
-            //   Console.Write("{0} ", solution[i]);
-            //Console.WriteLine();
-
-            return solution;
-        }
-
-        private int[] GenerateGreedyHeuristicSolution()
-        {
-            int size = Instance.Size;
-            int sizexsize = Instance.DistanceMatrix.Length;
-            int[] distanceClone = new int[sizexsize];
-            int[] costClone = new int[sizexsize];
-            for (int i = 0; i < sizexsize; i++)
-            {
-                distanceClone[i] = Instance.DistanceMatrix[i];
-                costClone[i] = Instance.CostMatrix[i];
-            }
-
-            int[] solution = new int[size];
-
-            for (int i = 0; i < size; i++)
-            {
-                int maxPosition = 0;
-                for (int j = 0; j < sizexsize; j++)
-                    if (distanceClone[size * i + j] > distanceClone[maxPosition])
-                        maxPosition = size * i + j;
-                solution[maxPosition/size] = maxPosition % size;
-                for (int j = 0; j < sizexsize; j++)
-                {
-                }
-            }
-             
-
-            return solution;
-        }
 
         private int[] SolveGreedy(Neighbourhood hood)
         {
