@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Metaheuristics
 {
@@ -10,9 +11,10 @@ namespace Metaheuristics
             TextReader instanceData;
             ReaderMode readerMode = ReaderMode.Count;
             QapInstance instance = null;
-            if (File.Exists(fileName))
+            var dataFileName = fileName + ".dat";
+            if (File.Exists(dataFileName))
             {
-                instanceData = new StreamReader(fileName);
+                instanceData = new StreamReader(dataFileName);
                 var strLine = String.Empty;
                 int instanceSize = 0;
                 int numbersRead = 0;
@@ -32,7 +34,7 @@ namespace Metaheuristics
                             instanceSize = Int32.Parse(strLine);
                             instance = new QapInstance(instanceSize);
                             readerMode = ReaderMode.Distances;
-
+                            instance.Name = fileName;
                             break;
                         case ReaderMode.Distances:
                             if (instance != null)
@@ -73,8 +75,37 @@ namespace Metaheuristics
             }
             else
             {
-                throw new FileNotFoundException("File not found, fool");
+                throw new FileNotFoundException("File " + fileName + " not found, fool");
             }
+            if(File.Exists(fileName+".sln"))
+            {
+                var solutionData = new StreamReader(fileName+".sln");
+                var scoreLine = solutionData.ReadLine();
+                var soluionLine = solutionData.ReadLine();
+
+                var score = scoreLine
+                    .Split(' ')
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToArray()[1];
+
+                var solution = soluionLine
+                    .Split(' ')
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(x => Int32.Parse(x))
+                    .ToArray();
+
+                if (instance != null)
+                {
+                    instance.OptimalScore = Int32.Parse(score);
+                    instance.OptimalSolution = solution;
+                }
+                solutionData.Close();
+            }
+            else
+            {
+                if (instance != null) instance.OptimalScore = -1;
+            }
+            instanceData.Close();
             return instance;
         }
 
@@ -119,10 +150,20 @@ namespace Metaheuristics
             Console.WriteLine();
         }
 
-        public static void PrintInstance(QapInstance instance)
+        public static void PrintInstance(this QapInstance instance, PrintInstanceMode mode)
         {
-            PrintSquareArray(instance.DistanceMatrix, instance.Size);
-            PrintSquareArray(instance.CostMatrix, instance.Size);
+            if (mode == PrintInstanceMode.Verbose)
+            {
+                PrintSquareArray(instance.DistanceMatrix, instance.Size);
+                PrintSquareArray(instance.CostMatrix, instance.Size);
+                
+            }
+            else
+            {
+                Console.WriteLine("Instance name: {0}", instance.Name);
+                Console.WriteLine("Instance size: {0}", instance.Size);
+            }
+            Console.WriteLine("Optimal score: {0}", instance.OptimalScore);
         }
     }
 }

@@ -50,9 +50,12 @@
     <Compile Include="src\enum\LocalSearchType.cs" />
     <Compile Include="src\enum\NeighbourhoodType.cs" />
     <Compile Include="src\enum\InitialSolution.cs" />
+    <Compile Include="src\enum\PrintInstanceMode.cs" />
     <Compile Include="src\Experiment.cs" />
     <Compile Include="src\InstanceIO.cs" />
+    <Compile Include="src\Neighbour.cs" />
     <Compile Include="src\QapSASolver.cs" />
+    <Compile Include="src\QapSimpleSolver.cs" />
     <Compile Include="src\QapSolver.cs" />
     <Compile Include="src\Neighbourhood.cs" />
     <Compile Include="src\Program.cs" />
@@ -62,7 +65,9 @@
     <Compile Include="src\enum\ReaderMode.cs" />
     <Compile Include="src\QapTabuSolver.cs" />
     <Compile Include="src\ThreeSwapEnumerator.cs" />
+    <Compile Include="src\ThreeSwapRandomEnumerator.cs" />
     <Compile Include="src\TwoSwapEnumerator.cs" />
+    <Compile Include="src\TwoSwapRandomEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\bur26a.sln">

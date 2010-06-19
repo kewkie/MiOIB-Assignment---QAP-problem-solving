@@ -11,7 +11,12 @@
             _instanceSize = size;
             _distances = new int[size*size];
             _costs = new int[size*size];
+            OptimalSolution = new int[size];
         }
+
+        public int OptimalScore { get; set; }
+
+        public int[] OptimalSolution { get; set; }
 
         public int[] DistanceMatrix
         {
@@ -35,7 +40,8 @@
             {
                 return _instanceSize;
             }
-
         }
+
+        public string Name { get; set; }
     }
 }

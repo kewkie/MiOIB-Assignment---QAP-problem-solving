@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Timers;
 
 namespace Metaheuristics
 {
-    class Experiment
-    {
-        private readonly QapSolver _solver;
-        
-        public Experiment(QapSolver solver)
+    static class Experiment
+    {   
+        public static Dictionary<TimeSpan,double> SolveWithTimeLimit(TimeSpan limit, TimeSpan grain, QapInstance instance, QapSolver solver)
         {
-            _solver = solver;
-        }
-
-        public List<int> SolveWithTimeLimit(TimeSpan limit, TimeSpan grain)
-        {
-            var counter = 0;
-            var compTimes = new List<int>();
-            var bestResult = new int[_solver.InstanceSize];
+            int[] counter = {0};
+            int grainTimeElapsedCount = 0;
+            var resultsInTime = new Dictionary<TimeSpan, double>();
+            var bestResult = new int[instance.Size];
             for (int i = 0; i < bestResult.Length; i++ )
             {
                 bestResult[i] = i;
@@ -25,11 +21,17 @@ namespace Metaheuristics
             var globalTimer = new Timer(limit.TotalMilliseconds);
             var grainTimer = new Timer(grain.TotalMilliseconds) {AutoReset = true};
             var timerElapsed = false;
-            grainTimer.Elapsed += delegate(object sender, ElapsedEventArgs e)
+            grainTimer.Elapsed += delegate
                                       {
-                                          compTimes.Add(_solver.Evaluate(bestResult));
-                                          Console.WriteLine("Best Score: {0}, Count: {1}, at: {2}, counter: {3}", 
-                                              ((counter==0)?(-1):(_solver.Evaluate(bestResult))), compTimes.Count, e.SignalTime.Millisecond, counter );
+                                          var bestScore = QapSolver.Evaluate(bestResult, instance);
+                                          grainTimeElapsedCount++;
+                                          resultsInTime.Add(new TimeSpan(0, 0, grainTimeElapsedCount * grain.Seconds), 
+                                                            Quality(bestScore, instance));
+                                          Console.WriteLine("Best Score: {0}, Count: {1}, Quality: {2}, counter: {3}", 
+                                              ((counter[0]==0)?(-1):(bestScore)), 
+                                              resultsInTime.Count, 
+                                              ((counter[0]==0)?(0):(Quality(bestScore, instance)))
+                                              , counter[0] );
                                       };
             globalTimer.Elapsed += delegate { timerElapsed = true; grainTimer.Stop();};
             int[] result;
@@ -38,9 +40,9 @@ namespace Metaheuristics
             {
                globalTimer.Start();
                grainTimer.Start();
-               result = _solver.Solve();
-               counter++;
-               if(_solver.Evaluate(result) < _solver.Evaluate(bestResult))
+               result = solver.Solve(instance);
+               counter[0]++;
+               if(QapSolver.Evaluate(result, instance) < QapSolver.Evaluate(bestResult, instance))
                {
                    lock (bestResult)
                    {
@@ -48,12 +50,90 @@ namespace Metaheuristics
                    } 
                }
             }
-            return compTimes;
+            return resultsInTime;
         }
 
-        public TimeSpan SolveWithCountLimit(int count)
+        private static double Quality(int score, QapInstance instance)
         {
-            throw new NotImplementedException();
+            return 1 - ((score - instance.OptimalScore)/(double) instance.OptimalScore);
+        }
+
+        public static IList<TimeSpan> TimeToSolveWithCountLimit(int count, QapSolver solver, QapInstance instance)
+        {
+            var stopwatch = new Stopwatch();
+            var times = new List<TimeSpan>();
+            for(int i =0; i < count; i++)
+            {
+                stopwatch.Start();
+                solver.Solve(instance);
+                stopwatch.Stop();
+                times.Add(stopwatch.Elapsed);
+                stopwatch.Reset();
+            }
+
+            return times;
+        }
+
+        public static IList<double> ScoreWithCountLimit(int count, QapSolver solver, QapInstance instance)
+        {
+            var scoreList = new List<double>();
+            for (int i = 0; i < count; i++)
+            {
+                var result = solver.Solve(instance);
+                scoreList.Add(Quality(QapSolver.Evaluate(result, instance), instance));
+            }
+            return scoreList;
+        }
+
+        public static void SaveResultsAsCsv(string algorithm, IDictionary<string, IList<double>> results, string filename)
+        {
+            var stream = new FileStream(filename + ".csv", FileMode.Create, FileAccess.Write, FileShare.Read);
+            var writer = new StreamWriter(stream);
+            var line = "alg;inst;score";
+            writer.WriteLine(line);
+            foreach (var result in results)
+            {
+                foreach (var value in result.Value)
+                {
+                    line = algorithm + ";" + result.Key + ";" + value;
+                    writer.WriteLine(line);
+                }
+            }
+            writer.Close();
+        }
+
+        public static void SaveResultsAsCsv(string algorithm, IDictionary<string, IList<TimeSpan>> results, string filename)
+        {
+            var stream = new FileStream(filename + ".csv", FileMode.Create, FileAccess.Write, FileShare.Read);
+            var writer = new StreamWriter(stream);
+            var line = "alg;inst;score";
+            writer.WriteLine(line);
+            foreach (var result in results)
+            {
+                foreach (var value in result.Value)
+                {
+                    line = algorithm + ";" + result.Key + ";" + value.TotalMilliseconds;
+                    writer.WriteLine(line);
+                }
+            }
+            writer.Close();
+        }
+
+        public static void SaveResultsAsCsv(string algorithm, IDictionary<string, IDictionary<TimeSpan, double>> results, string filename)
+        {
+            var stream = new FileStream(filename + ".csv", FileMode.Create, FileAccess.Write, FileShare.Read);
+            var writer = new StreamWriter(stream);
+            var line = "alg;inst;time;score";
+            writer.WriteLine(line);
+            foreach (var result in results)
+            {
+                foreach (var value in result.Value)
+                {
+                    line = algorithm + ";" + result.Key + ";" + value.Key.TotalSeconds + ";" + value.Value;
+                    writer.WriteLine(line);
+                }
+            }
+            writer.Close();
         }
     }
 }

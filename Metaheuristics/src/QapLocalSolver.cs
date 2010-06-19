@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Linq;
 
 namespace Metaheuristics
 {
-    delegate int[] GenerateInitialSolution();
-    delegate int[] GenerateNeighbour(int number);
-    internal delegate int[] SolveInstance(Neighbourhood neighbourhood);
+    internal delegate int[] SolveInstance(Neighbourhood neighbourhood, QapInstance instance);
 
     class QapLocalSolver : QapSolver
     {
         private LocalSearchType _searchType;
         private SolveInstance _solveInstance;
-
-        
 
         public LocalSearchType SearchType
         {
@@ -41,18 +36,19 @@ namespace Metaheuristics
         public NeighbourhoodType NeighbourhoodType { get; set; }
         public int Seed { get; set; }
 
-        public QapLocalSolver(QapInstance instance) : base(instance)
+        public override int[] Solve(QapInstance instance)
         {
+            int[] initialSolution = _initialSolutionGenerator(instance);
+            var perm = new Neighbourhood(initialSolution, NeighbourhoodType);
+            return _solveInstance(perm, instance);
         }
 
-        public override int[] Solve()
+        public override void Reset()
         {
-            int[] initialSolution = _initialSolutionGenerator();
-            var perm = new Neighbourhood(initialSolution, NeighbourhoodType);
-            return _solveInstance(perm);
-        } 
+            throw new NotImplementedException();
+        }
 
-        private int[] SolveGreedy(Neighbourhood hood)
+        private static int[] SolveGreedy(Neighbourhood hood, QapInstance instance)
         {
             var bestScore = int.MaxValue;
             var solveFinished = false;
@@ -61,12 +57,12 @@ namespace Metaheuristics
                 solveFinished = true;
                 foreach (var neighbourhood in hood)
                 {
-                    var currentScore = Evaluate(neighbourhood);
+                    var currentScore = Evaluate(neighbourhood.Solution, instance);
                     if (currentScore < bestScore)
                     {
                         bestScore = currentScore;
                         solveFinished = false;
-                        hood.Base = neighbourhood;
+                        hood.Base = neighbourhood.Solution;
                         break;
                     }
                 }
@@ -74,23 +70,22 @@ namespace Metaheuristics
             return hood.Base;
         }
 
-        private int[] SolveSteepest(Neighbourhood hood)
+        private static int[] SolveSteepest(Neighbourhood hood, QapInstance instance)
         {
             var bestScore = int.MaxValue;
             var solveFinished = false;
             var bestHood = new int[hood.Base.Length];
-            var iterations = 0;
             while (!solveFinished)
             {
                 solveFinished = true;
                 foreach (var neighbourhood in hood)
                 {
-                    var currentScore = Evaluate(neighbourhood);
+                    var currentScore = Evaluate(neighbourhood.Solution, instance);
                     if (currentScore < bestScore)
                     {
                         bestScore = currentScore;
                         solveFinished = false;
-                        Array.Copy(neighbourhood,bestHood, bestHood.Length);
+                        Array.Copy(neighbourhood.Solution, bestHood, bestHood.Length);
                     }
                 }
                 Array.Copy(bestHood, hood.Base, bestHood.Length);

@@ -4,6 +4,8 @@ namespace Metaheuristics
     enum NeighbourhoodType
     {
         TwoSwap,
-        ThreeSwap
+        ThreeSwap,
+        TwoSwapRandom,
+        ThreeSwapRandom
     }
 }

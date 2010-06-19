@@ -1,0 +1,23 @@
+require(gplots)
+AllTab <- read.csv("10_scores_all.csv", sep=";", header=TRUE, dec=",")
+AllTab["score"] <- 1 - AllTab["score"]
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 - 0.1,
+subset = alg == "ts", 
+main = "Wyniki dzia³ania algorytmów na wybranych instancjach", 
+xlab="instancja", ylab="b³¹d rozwi¹zania", col="cadetblue1", 
+names=c("bur26g", "kra30a", "lipa50b", "tai64c", 
+"tai80a", "wil100", "sko100c", "tho150"), ylim=c(0.001,1), log="y")
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 + 0.1,
+subset = alg == "heuristic", col = "yellow", add = TRUE, xlab = "")
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 + 0.2,
+subset = alg == "sa", col = "thistle2", add = TRUE)
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 - 0.2,
+subset = alg == "greedy", col = "darkseagreen1", add = TRUE)
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 - 0.3,
+subset = alg == "steepest", col = "darksalmon", add = TRUE)
+boxplot(score ~ inst, data = AllTab, boxwex = 0.10, at = 1:8 + 0.3,
+subset = alg == "random", col = "hotpink", add = TRUE)
+smartlegend(x="left",y="top", inset = 0,
+            c("Steepest", "Greedy", "TS", "Heuristic", "SA", "Random"),
+            fill = c("darksalmon", "darkseagreen1", "cadetblue1", 
+                     "yellow", "thistle2", "hotpink"))

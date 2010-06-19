@@ -1,0 +1,271 @@
+%% Based on a TeXnicCenter-Template by Tino Weinkauf.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt,polish,msc]{article}
+% Alternative Options:
+%	Paper Size: a4paper / a5paper / b5paper / letterpaper / legalpaper / executivepaper
+% Duplex: oneside / twoside
+% Base Font Size: 10pt / 11pt / 12pt
+
+
+%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{babel}
+\usepackage[cp1250]{inputenc} 
+\usepackage[OT4]{fontenc} 
+%% Packages for Graphics & Figures %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx} %%For loading graphic files
+%\usepackage{subfig} %%Subfigures inside a figure
+%\usepackage{tikz} %%Generate vector graphics from within LaTeX
+
+%% Please note:
+%% Images can be included using \includegraphics{filename}
+%% resp. using the dialog in the Insert menu.
+%% 
+%% The mode "LaTeX => PDF" allows the following formats:
+%%   .jpg  .png  .pdf  .mps
+%% 
+%% The modes "LaTeX => DVI", "LaTeX => PS" und "LaTeX => PS => PDF"
+%% allow the following formats:
+%%   .eps  .ps  .bmp  .pict  .pntg
+
+
+%% Math Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+
+
+%% Line Spacing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{setspace}
+%\singlespacing        %% 1-spacing (default)
+%\onehalfspacing       %% 1,5-spacing
+%\doublespacing        %% 2-spacing
+
+
+%% Other Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{a4wide} %%Smaller margins = more text per page.
+%\usepackage{fancyhdr} %%Fancy headings
+%\usepackage{longtable} %%For tables, that exceed one page
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Remarks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% TODO:
+% 1. Edit the used packages and their options (see above).
+% 2. If you want, add a BibTeX-File to the project
+%    (e.g., 'literature.bib').
+% 3. Happy TeXing!
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options / Modifications
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{options} %You need a file 'options.tex' for this
+%% ==> TeXnicCenter supplies some possible option files
+%% ==> with its templates (File | New from Template...).
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\pagestyle{empty} %No headings for the first pages.
+
+
+%% Title Page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Write your text here or include other files.
+
+\thispagestyle{empty} %bez numeru strony
+
+\begin{center}
+{\large{Sprawozdanie z laboratorium:\\
+Metaheurystyki i Obliczenia Inspirowane Biologicznie}}
+
+\vspace{3ex}
+
+Czêœæ I: Algorytmy optymalizacji lokalnej, problem QAP\\
+Czêœæ II: Algorytmy optymalizacji lokalnej i globalnej, problem QAP
+%Czêœæ III: Eksperyment: ... (prezentacjê mo¿na zrobiæ w LaTeX/klasa beamer)
+
+\vspace{3ex}
+{\footnotesize\today}
+
+\end{center}
+
+
+\vspace{10ex}
+
+Prowadz¹cy: dr in¿. Maciej Komosiñski
+
+\vspace{5ex}
+
+Autorzy:
+\begin{tabular}{lllr}
+\textbf{Adam Starikiewicz} & inf75960 & ISWD & adam.starikiewicz@gmail.com \\
+\textbf{Micha³ Gie³da} & inf75899 & ISWD & michal.gielda@gmail.com \\
+\end{tabular}
+
+\vspace{5ex}
+
+Zajêcia poniedzia³kowe, 11:45.
+
+
+\newpage
+
+
+%% Inhaltsverzeichnis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\tableofcontents %Table of contents
+%\cleardoublepage %The first chapter should start on an odd page.
+
+\pagestyle{plain} %Now display headings: headings / fancy / ...
+
+
+
+%% Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Write your text here or include other files.
+
+%\input{intro} %You need a file 'intro.tex' for this.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ==> Some hints are following:
+
+%\chapter{Some small hints}\label{hints}
+
+\section{Wstêp}
+Problem QAP (\emph{Quadratic Assignment Problem}) polega na przyporz¹dkowaniu przep³ywów $n$ obiektom umieszczonym w przestrzeni (ich wzajemne odleg³oœci dane s¹ w macierzy odleg³oœci $n \times n$), tak, by zminimalizowaæ koszt przep³ywu miêdzy tymi obiektami, który dany jest w macierzy przep³ywów (równie¿ $n \times n$). Funkcja kosztu to 
+\begin{equation}
+\sum_{a,b \in P}w(a,b) \cdot d(f(a), f(b))
+\end{equation}
+gdzie $a$ oraz $b$ to indeksy obiektów, $w$ to macierz odleg³oœci, $d$ to macierz przep³ywów a $f$ to funkcja bêd¹ca permutacj¹ indeksów obiektów. Permutacja jest rozwi¹zaniem problemu i definiuje ona którym obiektom przypisana jest odpowiednia ,,rola'', tzn. jakie przep³ywy zaistniej¹ pomiêdzy obiektami. Poniewa¿ przestrzeñ rozwi¹zañ to liczba mo¿liwych permutacji, sprawdzenie wszystkich zajê³oby czas zale¿ny od $O(n!)$, a wiêc zbyt du¿y dla wiêkszych instancji.\\
+Poza powy¿sz¹ interpretacj¹ problemu przydzielaj¹c¹ role do obiektów (np. fabryk), QAP ma tak¿e zastosowanie w projektowaniu uk³adów scalonych.
+
+\section{Algorytmy}
+W ramach eksperymentu zaimplementowano algorytmy \emph{GreedyHeuristic}, \emph{GreedyAntiheuristic}, \emph{Random} bêd¹ce prostymi heurystykami, \emph{Steepest} oraz \emph{Greedy} bêd¹ce odmianami \emph{Local search} oraz \emph{Simulated annealing} i \emph{Tabu search}.
+Ka¿dy z algorytmów zwraca jako wynik permutacjê, która jest rozwi¹zaniem problemu.
+
+\subsection{Random}
+Ten prosty algorytm generuje losowe poprawne rozwi¹zania, tzn. permutacje indeksów bez powtórzeñ. Jego implementacja s³u¿y g³ównie generowaniu rozwi¹zañ pocz¹tkowych dla innych algorytmów, jednak z uwagi na jego szybkoœæ ma on szanse znaleŸæ dobre rozwi¹zanie, jeœli zostanie wykonany odpowiednio wiele razy.
+
+\subsection{Greedy heuristic}
+Podejœcie heurystyczne w tym algorytmie polega na minimalizowaniu sk³adników sumy stanowi¹cej ocenê rozwi¹zania. Ka¿dy z tych sk³adników to iloczyn, dlatego potencjalnie najbardziej ,,szkodliwy'' wp³yw na ocenê maj¹ iloczyny dwóch du¿ych wartoœci. Z tego wzglêdu w sposób zach³anny iloczyny dobierane s¹ w taki sposób, by wartoœæ odleg³oœci by³a maksymalizowana, przy jednoczesnej minimalizacji wartoœci kosztu przep³ywu. W ten sposób zmniejsza siê wp³yw wysokich wartoœci obu macierzy.
+
+\subsection{Greedy antiheuristic}
+Podejœcie symetryczne do powy¿szego, w którym maksymalizujemy ocenê koñcow¹ poprzez zach³ann¹ maksymalizacjê czynnika z macierzy odleg³oœci oraz czynnika macierzy kosztów przep³ywu jednoczeœnie.
+
+\subsection{Local search}
+Algorytmy przeszukiwania lokalnego oceniaj¹ rozwi¹zania nale¿¹ce do pewnego zdefiniowanego wczeœniej s¹siedztwa, tj. przestrzeni rozwi¹zañ podobnych do obecnie najlepszego, w poszukiwaniu rozwi¹zañ poprawiaj¹cych funkcjê oceny. Dzia³aj¹ w sposób zach³anny - co najmniej nie pogorszaj¹ dotychczasowego rozwi¹zania. Znalezione rozwi¹zanie zastêpuje dotychczasowe i powtarzamy procedurê dla nowego rozwi¹zania. Algorytm dzia³a do momentu, w którym brak jest w s¹siedztwie rozwi¹zañ polepszaj¹cych ocenê. Szybkoœæ dzia³ania i efektywnoœæ tych algorytmów zale¿y g³ównie od konstrukcji s¹siedztwa.
+
+\subsubsection{Greedy}
+W tej odmianie przeszukiwania lokalnego rozwi¹zanie bie¿¹ce zastêpowane jest pierwszym napotkanym lepszym rozwi¹zaniem z przegl¹danego s¹siedztwa. Dziêki temu algorytm zyskuje na szybkoœci, poprawia to te¿ jego szanse na ominiêcie lokalnych minimów.
+
+\subsubsection{Steepest}
+W tym podejœciu rozwi¹zanie bie¿¹ce jest zastêpowane najlepszym rozwi¹zaniem z rozwa¿anego s¹siedztwa. Wymusza to ocenê ca³ego s¹siedztwa w ka¿dym kroku, lecz poprawia zbie¿noœæ algorytmu w kierunku lepszych rozwi¹zañ. 
+
+\subsection{Simulated annealing}
+Idea metaheurystyki \emph{Simulated annealing} czerpie inspiracjê z procesu hartowania metali. Podobnie jak w przypadku stopniowego ch³odzenia metali, zale¿y nam na pocz¹tkowo wysokim stopniu ,,losowoœci'' algorytmu, którego stopniowe zmniejszanie prowadzi rozwi¹zanie w kierunku globalnego optimum. W ka¿dej iteracji losowane jest rozwi¹zanie z s¹siedztwa, które w zale¿noœci od oceny mo¿e zostaæ przyjête jako rozwi¹zanie bie¿¹ce. Prawdopodobieñstwo jest funkcj¹ oceny rozwi¹zañ bie¿¹cego i znalezionego oraz bie¿¹cej (tj. zale¿nej od numeru iteracji) temperatury. Znacz¹cy wp³yw na charakter dzia³ania algorytmu ma funkcja temperatury w zale¿noœci od czasu (liczby iteracji), czyli tzw. schemat ch³odzenia. W tym przypadku jest to funkcja okreœlona wzorem 
+\begin{equation}
+\frac{-\log{i}}{\log{i_{max}}}
+\end{equation}
+gdzie $i \in 1...i_{max}$ to numer bie¿¹cej iteracji a $i_{max}$ to maksymalna liczba iteracji (warunek stopu).
+
+\subsection{Tabu search}
+\emph{Tabu search} jest pomys³em rozwijaj¹cym metody przeszukiwania lokalnego o mechanizmy zmniejszaj¹ce ryzyko utkniêcia algorytmu w optimum lokalnym. Realizowane jest to przy pomocy listy tabu, czyli zakazanych ruchów. W ka¿dej iteracji kandydat z s¹siedztwa jest weryfikowany w oparciu o t¹ listê - jeœli dany ruch wystêpuje na liscie, to jest niedozwolony, chyba, ¿e spe³ni kryterium aspiracji. W tym wypadku kryterium aspiracji to lepsza ocena rozwa¿anego rozwi¹zania, ni¿ rozwi¹zanie bie¿¹ce. Ruch zdefiniowamy jest tu jako zamiana dwóch wartoœci w rozwi¹zaniu. Kryterium stopu to opcjonalnie liczba iteracji lub brak polepszenia rozwi¹zania przez $n$ iteracji.
+
+\subsection{Operatory s¹siedztwa}
+Odpowiednio dobrany operator s¹siedztwa kszta³tuje dzia³anie powy¿szych metaheurystyk. W algorytmach przeszukiwania lokalnego zastosowano obydwa zaimplementowane s¹siedztwa, w \emph{TS} i \emph{SA} wykorzysytwane jest s¹siedztwo \emph{two-swap}.
+
+\subsubsection{Two-Swap}
+Operator \emph{two-swap} jako s¹siedztwo definuje wszystkie mo¿liwe pojedyncze zamiany elementów parami w stosunku do rozwi¹zania bazowego. Rozmiar s¹siedztwa wynosi w tym wypadku $\frac{n^2-n}{2}$.
+
+\subsubsection{Three-Swap}
+Operator \emph{three-swap} jako s¹siedztwo definiuje wszystkie zamiany trójek elementów, czyli dla ka¿dej trójki wszystkie jej permutacje. Rozmiar s¹siedztwa wynosi w tym wypadku ${n\choose 3} \cdot (3! - 1)$ (rzêdu $n^3$).
+
+\section{Eksperymenty}
+Eksperymenty zosta³y przeprowadzone na zestawie instancji \emph{bur26g, kra30a, lipa50b, tai64c, tai80a, wil100, esc128, tho150}. Wszystkie by³y uruchamiane na tej samej maszynie o parametrach 2.8 Ghz, 4 GB RAM, Windows 7 64bit. Wyniki przetwarzane i wizualizowane zosta³y przy pomocy skryptów w jêzyku R.
+
+\subsection{Jakoœæ rozwi¹zania}
+Jakoœæ zwróconego przez algorytm rozwi¹zania jest obliczana jako
+\begin{equation}
+E = \frac{S - S_{opt}}{S_{opt}}
+\end{equation}
+gdzie $E$ to b³¹d rozwi¹zania, $S$ to ocena badanego rozwi¹zania, a $S_{opt}$ to ocena rozwi¹zania optymalnego. Uzyskane wartoœci jakoœci s¹ z przedzia³u $\left[ 0, 1 \right]$ - im bli¿ej 0, tym lepiej (mniejszy b³¹d).
+
+\subsection{Œrednia jakoœæ rozwi¹zañ}
+W tym eksperymencie sprawdzono wszystkie algorytmy na ca³ym zestawie instancji. Algorytmy przeszukiwania lokalnego zosta³y uruchomione z s¹siedztwem \emph{two-swap}, losowym rozwi¹zaniem pocz¹tkowym. Algorytm \emph{SA} zosta³ uruchomiony z limitem iteracji 100000, \emph{TS} z limitem 200 iteracji bez polepszenia rezultatu. Ka¿dy z algorytmów zosta³ uruchomiony 10 razy, z wyj¹tkiem \emph{heuristic}, który dzia³a w sposób deterministyczny dla danej instancji.
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[width=1.00\textwidth]{10_scores_all.png}
+	\label{fig:10_scores_all}
+\end{figure}
+
+\subsection{Efektywnoœæ}
+
+
+\subsection{Liczba iteracji}
+
+\subsection{Liczba przejrzanych rozwi¹zañ}
+
+\subsection{Zale¿noœæ jakoœci rozwi¹zania koñcowego od jakoœci rozwi¹zania pocz¹tkowego}
+
+\subsection{Wielokrotne uruchamianie}
+
+\subsection{Podobieñstwo znajdowanych rozwi¹zañ}
+
+\subsection{Badanie wp³ywu losowoœci}
+\label{sec-randomness}
+
+\section{Wnioski}
+
+\section{Propozycje ulepszeñ}
+%% <== End of hints
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BIBLIOGRAPHY AND OTHER LISTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% A small distance to the other stuff in the table of contents (toc)
+\addtocontents{toc}{\protect\vspace*{\baselineskip}}
+
+%% The Bibliography
+%% ==> You need a file 'literature.bib' for this.
+%% ==> You need to run BibTeX for this (Project | Properties... | Uses BibTeX)
+%\addcontentsline{toc}{chapter}{Bibliography} %'Bibliography' into toc
+%\nocite{*} %Even non-cited BibTeX-Entries will be shown.
+%\bibliographystyle{alpha} %Style of Bibliography: plain / apalike / amsalpha / ...
+%\bibliography{literature} %You need a file 'literature.bib' for this.
+
+%% The List of Figures
+\clearpage
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+
+%% The List of Tables
+\clearpage
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% APPENDICES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%% ==> Write your text here or include other files.
+
+%\input{FileName} %You need a file 'FileName.tex' for this.
+
+
+\end{document}
+

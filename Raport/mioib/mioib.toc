@@ -1,0 +1,27 @@
+\select@language {polish}
+\contentsline {section}{\numberline {1}Wst\k ep}{3}
+\contentsline {section}{\numberline {2}Algorytmy}{3}
+\contentsline {subsection}{\numberline {2.1}Random}{3}
+\contentsline {subsection}{\numberline {2.2}Greedy heuristic}{4}
+\contentsline {subsection}{\numberline {2.3}Greedy antiheuristic}{4}
+\contentsline {subsection}{\numberline {2.4}Local search}{4}
+\contentsline {subsubsection}{\numberline {2.4.1}Greedy}{4}
+\contentsline {subsection}{\numberline {2.5}Operatory s\k asiedztwa}{4}
+\contentsline {subsubsection}{\numberline {2.5.1}Swap}{4}
+\contentsline {subsubsection}{\numberline {2.5.2}Invert}{4}
+\contentsline {subsubsection}{\numberline {2.5.3}Permute}{4}
+\contentsline {section}{\numberline {3}Eksperymenty}{4}
+\contentsline {subsection}{\numberline {3.1}Odleg\IeC {\l }o\'s\'c od optimum}{4}
+\contentsline {subsection}{\numberline {3.2}Czas dzia\IeC {\l }ania}{4}
+\contentsline {subsection}{\numberline {3.3}Efektywno\'s\'c}{5}
+\contentsline {subsection}{\numberline {3.4}Liczba iteracji}{5}
+\contentsline {subsection}{\numberline {3.5}Liczba przejrzanych rozwi\k aza\'n}{5}
+\contentsline {subsection}{\numberline {3.6}Zale\.zno\'s\'c jako\'sci rozwi\k azania ko\'ncowego od jako\'sci rozwi\k azania pocz\k atkowego}{5}
+\contentsline {subsection}{\numberline {3.7}Wielokrotne uruchamianie}{5}
+\contentsline {subsection}{\numberline {3.8}Podobie\'nstwo znajdowanych rozwi\k aza\'n}{5}
+\contentsline {subsection}{\numberline {3.9}Badanie wp\IeC {\l }ywu losowo\'sci}{5}
+\contentsline {section}{\numberline {4}Wnioski}{5}
+\contentsline {section}{\numberline {5}Propozycje ulepsze\'n}{5}
+\vspace *{\baselineskip }
+\contentsline {chapter}{List of Figures}{6}
+\contentsline {chapter}{List of Tables}{7}

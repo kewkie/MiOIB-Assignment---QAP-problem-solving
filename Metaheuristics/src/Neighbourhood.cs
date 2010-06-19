@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Metaheuristics
 {
-    struct Neighbourhood : IEnumerable<int[]>
+    struct Neighbourhood : IEnumerable<Neighbour>
     {
         private readonly NeighbourhoodType _type;
         
@@ -19,7 +19,7 @@ namespace Metaheuristics
 
         }
         
-        public IEnumerator<int[]> GetEnumerator()
+        public IEnumerator<Neighbour> GetEnumerator()
         {
             switch(_type)
             {
@@ -27,6 +27,10 @@ namespace Metaheuristics
                     return new TwoSwapEnumerator(Base);
                 case NeighbourhoodType.ThreeSwap:
                     return new ThreeSwapEnumerator(Base);
+                case NeighbourhoodType.TwoSwapRandom:
+                    return new TwoSwapRandomEnumerator(Base);
+                case NeighbourhoodType.ThreeSwapRandom:
+                    return new ThreeSwapRandomEnumerator(Base);
                 default:
                     return new TwoSwapEnumerator(Base);
             }

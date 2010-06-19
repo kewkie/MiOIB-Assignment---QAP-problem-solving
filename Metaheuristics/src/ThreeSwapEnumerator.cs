@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Metaheuristics
 {
-    class ThreeSwapEnumerator : IEnumerator<int[]>
+    class ThreeSwapEnumerator : IEnumerator<Neighbour>
     {
-        private readonly int[] _current;
+        private Neighbour _current;
         private readonly int[] _base;
         private int _firstIndex;
         private int _secondIndex;
@@ -18,7 +16,12 @@ namespace Metaheuristics
         public ThreeSwapEnumerator(int[] @base)
         {
             _base = @base;
-            _current = new int[_base.Length];
+            _current = new Neighbour
+                           {
+                               Solution = new int[_base.Length],
+                               SwappedIndices = new int[3],
+                               SwappedValues = new int[3]
+                           };
             Reset();
         }
         
@@ -50,43 +53,52 @@ namespace Metaheuristics
                 }
                 _permutation = 0;
             }
+
             Swap(_firstIndex, _secondIndex, _thirdIndex, _permutation);
+
+            _current.SwappedIndices[0] = _firstIndex;
+            _current.SwappedIndices[1] = _secondIndex;
+            _current.SwappedIndices[2] = _thirdIndex;
+
+            _current.SwappedValues[0] = _current.Solution[_firstIndex];
+            _current.SwappedValues[1] = _current.Solution[_secondIndex];
+            _current.SwappedValues[2] = _current.Solution[_thirdIndex];
             return true;
         }
 
         private void Swap(int first, int second, int third, int permutation)
         {
-            Array.Copy(_base, _current, _base.Length);
+            Array.Copy(_base, _current.Solution, _base.Length);
             int temp;
 
             switch(permutation)
             {
                 case 0:
-                    temp = _current[second];
-                    _current[second] = _current[third];
-                    _current[third] = temp;
+                    temp = _current.Solution[second];
+                    _current.Solution[second] = _current.Solution[third];
+                    _current.Solution[third] = temp;
                     break;
                 case 1:
-                    temp = _current[first];
-                    _current[first] = _current[second];
-                    _current[second] = temp;
+                    temp = _current.Solution[first];
+                    _current.Solution[first] = _current.Solution[second];
+                    _current.Solution[second] = temp;
                     break;
                 case 2:
-                    temp = _current[first];
-                    _current[first] = _current[second];
-                    _current[second] = _current[third];
-                    _current[third] = temp;
+                    temp = _current.Solution[first];
+                    _current.Solution[first] = _current.Solution[second];
+                    _current.Solution[second] = _current.Solution[third];
+                    _current.Solution[third] = temp;
                     break;
                 case 3:
-                    temp = _current[first];
-                    _current[first] = _current[third];
-                    _current[third] = temp;
+                    temp = _current.Solution[first];
+                    _current.Solution[first] = _current.Solution[third];
+                    _current.Solution[third] = temp;
                     break;
                 case 4:
-                    temp = _current[first];
-                    _current[first] = _current[third];
-                    _current[third] = _current[second];
-                    _current[second] = temp;
+                    temp = _current.Solution[first];
+                    _current.Solution[first] = _current.Solution[third];
+                    _current.Solution[third] = _current.Solution[second];
+                    _current.Solution[second] = temp;
                     break;
                 default:
                     throw new InvalidOperationException("Wrong permutation number, fool");
@@ -99,10 +111,10 @@ namespace Metaheuristics
             _secondIndex = 1;
             _thirdIndex = 2;
             _permutation = 0;
-            Array.Copy(_base, _current, _base.Length);
+            Array.Copy(_base, _current.Solution, _base.Length);
         }
 
-        public int[] Current
+        public Neighbour Current
         {
             get { return _current; }
         }
